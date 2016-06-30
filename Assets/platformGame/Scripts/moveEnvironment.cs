@@ -12,6 +12,9 @@ namespace mover{
 		public float speed = 1;
 		public GameObject env;
 		public int stillAlive;
+		public GameObject ocean;
+		public float oceanSpeed = 0;
+		Vector2 oceanCounter = Vector2.zero;
 		// Use this for initialization
 		void Start () {
 			stillAlive = amount;
@@ -23,10 +26,21 @@ namespace mover{
 		// Update is called once per frame
 		void Update () {
 			moveThings ();
+			moveOcean ();
 			rotateEnvironment ();
 			checkAlive();
 			if (stillAlive <= 0)
 				Reset ();
+		}
+
+		void moveOcean(){
+			oceanCounter.x += -direction.direction.x * oceanSpeed * Time.deltaTime;
+			oceanCounter.y += -direction.direction.z * oceanSpeed * Time.deltaTime;
+
+			var offset = ocean.GetComponent<MeshRenderer> ().material.GetTextureOffset ("_MainTex");
+			ocean.GetComponent<MeshRenderer>().material.SetTextureOffset("_MainTex",
+				new Vector2(oceanCounter.x, 
+							oceanCounter.y));
 		}
 
 		void setupThings(){
@@ -35,7 +49,14 @@ namespace mover{
 				props [i] = Instantiate( things [++j], new Vector3(0,1000*i,0) , Quaternion.identity) as GameObject;
 				if (j >= things.Length-1)
 					j = -1;
-				props[i].transform.localPosition = new Vector3(Random.Range(-bounds.x,bounds.x),0,Random.Range(-bounds.y,bounds.y));
+				//props[i].transform.localPosition = new Vector3(Random.Range(-bounds.x,bounds.x),0,Random.Range(-bounds.y,bounds.y));
+				var aX = Mathf.PerlinNoise(8.5f * i / 3f + 0.1f, 10.5f * i/ 3f + 0.1f);
+				var aZ = Mathf.PerlinNoise (7.5f * i / 3f + 0.1f, 12.5f * i / 3f + 0.1f);
+				var a = new Vector3((aX * (2 * bounds.x)) - (bounds.x),
+									0,
+					(aZ * (2 * bounds.y)) - (bounds.y));
+				//a.Set (Mathf.PerlinNoise (a.x, a.z), 0, Mathf.PerlinNoise (i * a.x, i * a.z));
+				props [i].transform.localPosition = a;
 				props [i].transform.parent = env.transform;
 			}
 		}

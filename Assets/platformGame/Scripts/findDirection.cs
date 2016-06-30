@@ -5,9 +5,9 @@ namespace mover{
 	public class findDirection : MonoBehaviour {
 
 		//public GameObject[] people;
-		Transform[] people;
+		[SerializeField]
+		Holojam.Actor[] people;
 		public Vector3 direction = Vector3.zero;
-		public Holojam.UserManager um;
 		// Use this for initialization
 		void Start () {
 		
@@ -20,11 +20,9 @@ namespace mover{
 
 		Vector3 findAveragePosition(){
 
-			people = um.transform.GetComponentsInChildren<Transform> ();
-
 			Vector3 avg = Vector3.zero;
 			for (int i = 0; i < people.Length; i++) {
-				Vector3 pos = people [i].position;
+				Vector3 pos = people [i].transform.position;
 				avg = new Vector3 (avg.x + pos.x, avg.y + pos.y, avg.z + pos.z);
 			}
 			Vector3 returnAvg = new Vector3 (avg.x / people.Length, avg.y / people.Length, avg.z / people.Length);

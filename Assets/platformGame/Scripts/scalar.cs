@@ -5,6 +5,7 @@ namespace mover{
 	public class scalar : MonoBehaviour {
 
 		public float worldScale;
+		public float scale =1;
 		// Use this for initialization
 		void Start () {
 		
@@ -13,7 +14,7 @@ namespace mover{
 		// Update is called once per frame
 		void Update () {
 			float dist = this.transform.localPosition.magnitude;
-			float remap = map (dist, 0, worldScale, 1, 0);
+			float remap = map (dist, 0, worldScale, scale, 0);
 			this.transform.GetChild (0).transform.localScale = new Vector3 (remap, remap, remap);
 		}
 
